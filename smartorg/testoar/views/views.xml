@@ -1,0 +1,108 @@
+<odoo>
+<!--==课程部分Course== -->  
+        <!-- 课程的表单视图course form view -->
+        <record model="ir.ui.view" id="course_form_view">
+            <field name="name">course.form</field>
+            <field name="model">testoar.course</field>
+            <field name="arch" type="xml">
+                <form string="Course Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="responsible_id"/> 
+                        </group>
+                        <notebook>
+                            <page string="描述Description">
+                                <field name="description"/>
+                            </page>
+                            <page string="课时Sessions">
+                                <field name="session_ids">
+                                    <tree string="Registered sessions">
+                                        <field name="name"/>
+                                        <field name="instructor_id"/> 
+                                    </tree>
+                                </field>
+                            </page>     
+                            <page string="有关About">
+                                <p>关于笔记本的例子！This is an example of notebooks!</p>                            
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!--课程Course的搜索视图-->
+        <record model="ir.ui.view" id="course_search_view">
+            <field name="name">course.search</field>
+            <field name="model">testoar.course</field>
+            <field name="arch" type="xml">
+                <search string="Course Search">
+                    <field name="name"/>
+                    <field name="description"/>
+                </search>
+            </field>
+        </record>
+    
+    <!-- window action -->
+    <!--
+        The following tag is an action definition for a "window action",
+        that is an action opening a view or a set of views
+    -->
+    <record model="ir.actions.act_window" id="course_list_action">
+        <field name="name">课程Courses</field>
+        <field name="res_model">testoar.course</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+              创建第一门课程！Create the first course!
+            </p> 
+        </field> 
+    </record>
+
+    <!-- top level menu: no parent -->
+    <menuitem id="main_testoar_menu" name="Test OAR"/>
+    <!-- A first level in the left side menu is needed
+          before using action= attribute -->
+    <menuitem id="testoar_menu" name="Main Test OAR"
+              parent="main_testoar_menu"/>
+    <!-- the following menuitem should appear *after*
+          its parent openacademy_menu and *after* its
+          action course_list_action -->
+    <menuitem id="courses_menu" name="Courses" parent="testoar_menu"
+              action="course_list_action"/>
+    <!-- Full id location:
+          action="openacademy.course_list_action"
+          It is not required when it is the same module -->
+
+<!--==课时部分Session（做课时安排，课程表/课时表）部分=== -->
+        <!-- 课时的表单视图session form view -->
+        <record model="ir.ui.view" id="session_form_view">
+            <field name="name">session.form</field>
+            <field name="model">testoar.session</field>
+            <field name="arch" type="xml">
+                <form string="Session Form">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="duration"/>
+                            <field name="seats"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="session_list_action">
+            <field name="name">Sessions</field>
+            <field name="res_model">testoar.session</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="session_menu" name="Sessions"
+                  parent="testoar_menu"
+                  action="session_list_action"/>
+
+
+</odoo>

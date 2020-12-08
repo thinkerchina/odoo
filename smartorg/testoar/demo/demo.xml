@@ -1,0 +1,23 @@
+<odoo>
+          <!--课程数据示例-->
+          <record id="course0" model="testoar.course">
+            <field name="name">课程0-语文</field>
+            <field name="description">课程0是语文课</field>
+          </record>
+
+          <record id="course1" model="testoar.course">
+            <field name="name">课程1-数学</field>
+            <field name="description">课程1是数学课</field>
+          </record>
+          
+          <record id="course2" model="testoar.course">
+            <field name="name">课程2-英语</field>
+            <field name="description">课程3是英语，这么课程是选修</field>
+          </record> 
+
+          <!--课时数据-->
+
+
+
+
+</odoo>

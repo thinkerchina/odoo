@@ -1,0 +1,17 @@
+@startuml
+
+header Page Header
+footer Page %page% of %lastpage%
+
+title Example Title
+
+Alice -> Bob : message 1
+note left: this is a first note
+note right:这是右侧注释
+
+Alice -> Bob : message 2
+
+
+
+@enduml
+

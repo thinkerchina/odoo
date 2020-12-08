@@ -1,0 +1,20 @@
+@startuml
+
+header Page Header
+footer Page %page% of %lastpage%
+
+title Example Title 2
+
+(*) --> "开始"
+
+if "是否拥有相机权限" then
+    --> [true] "调用相机"
+    --> "AI识别"
+    --> (*)
+else
+    -> [false] "申请相机权限"
+    --> "调用相机"
+    --> (*)
+endif
+
+@enduml

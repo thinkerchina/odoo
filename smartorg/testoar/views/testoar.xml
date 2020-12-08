@@ -1,0 +1,290 @@
+<odoo>
+<!--==课程部分== -->
+
+    <!--课程的表单视图 explicit list view definition -->  
+    <record model="ir.ui.view" id="course_form_view">
+      <field name="name">course.form</field>
+      <field name="model">testoar.course</field>
+      <field name="arch" type="xml">
+        <form string="课程表单Course Form" edit="1">
+            <sheet>
+                <group>
+                    <field name="name" string="课程Title-form"/> 
+                    <field name="responsible_id" string="讲课Reposible-form"/> <!--操作课时会话视图时增加-->
+                </group>
+                <notebook>
+                    <page string="描述Description">
+                        <field name="description"/>
+                    </page>
+                    
+                    <!--修正课程外键说明-->
+                    <page string="课时Sessions" >
+                        <field name="session_ids">
+                            <tree string="Registered sessions">
+                                <field name="name"/>
+                                <field name="instructor_id"/>
+                            </tree>
+                        </field>
+                    </page>
+
+                    <!--课程外键结束-->
+                    <page string="关于About" edit="1">
+                        这是一个笔记本的例子！This is an example of notebooks!
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+      </field>      
+    </record>
+      
+
+    <!-- 课程Course的树视图，override the automatically generated list view for courses -->
+    <record model="ir.ui.view" id="course_tree_view">
+        <field name="name">course.tree</field>
+        <field name="model">testoar.course</field>
+        <field name="arch" type="xml">
+            <tree string="课程树Course Tree" create="1" delete="1">
+                <field name="name" string="课程Course-Tree"/>
+                <field name="responsible_id" string="响应Resposible-Tree"/>
+            </tree>
+        </field>
+    </record>    
+
+    
+    <!--课程Course的搜索视图-->
+    <record model="ir.ui.view" id="course_search_view">
+        <field name="name">course.search</field>
+        <field name="model">testoar.course</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="description"/> <!--增加搜索图的高级设置-->
+                <filter name="my_courses" string="我的课程"
+                        domain="[('responsible_id', '=', uid)]"/>
+                <group string="Group By">
+                    <filter name="by_responsible" string="Responsible"
+                            context="{'group_by': 'responsible_id'}"/>
+                </group>               <!--搜索图高级设置结束-->
+            </search>
+        </field>
+    </record>
+
+    
+    <!--课程Course菜单在模型中打开的视图，actions opening views on models -->
+    <!-- window action -->
+    <!--
+        The following tag is an action definition for a "window action",
+        that is an action opening a view or a set of views
+    -->    
+    <record model="ir.actions.act_window" id="course_list_action">
+      <field name="name">课程Courses-Main</field>
+      <field name="res_model">testoar.course</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context" eval="{'search_default_my_courses': 0}"/>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">创建第一门课程!Create the first course!</p>
+      </field>
+    </record>
+    
+    <!-- 课程菜单项Top menu item，无父菜单 -->
+    <menuitem name="Test OAR" id="testoar_menu_root"/>
+
+    <!-- menu categories -->
+    <menuitem name="Main Test OAR" id="testoar_menu" 
+      parent="testoar_menu_root"/>
+    
+    <!-- actions -->
+    <menuitem name="课程Courses" id="courses_menu" 
+      parent="testoar_menu"
+      action="course_list_action"/>  
+    
+    <!-- server action to the one above
+        <record model="ir.actions.server" id="testoar.action_server">
+          <field name="name">testoar server</field>
+          <field name="model_id" ref="model_testoar_testoar"/>
+          <field name="state">code</field>
+          <field name="code">
+            action = {
+              "type": "ir.actions.act_window",
+              "view_mode": "tree,form",
+              "res_model": model._name,
+            }
+          </field>
+        </record>
+    -->    
+<!--==End -->
+
+<!--===下面是课时视图Session（做课时安排，课程表/课时表）部分=== -->
+    
+    <!-- 课时视图session form view -->
+    <record model="ir.ui.view" id="session_form_view">
+        <field name="name">session.form</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <form string="课时表单Session Form" edit="1">
+                <sheet>
+                    <group>
+                      <group string="课程General">  <!--课时Session视图外键时增加-->
+                          <field name="course_id"/>
+                          <field name="name"/>
+                          <field name="instructor_id"/>
+                          <field name="active"/> <!--增加课时是否激活（可选）-->
+                      </group>
+                      <group string="日程Schedule">
+                          <field name="start_date"/>
+                          <field name="duration"/>
+                          <field name="seats"/>
+                          <field name="taken_seats" widget="progressbar"/> <!--座位占用比的数据完整性处理-->
+                      </group>
+                    </group>
+                    <!--增加出席人组-->
+                    <label for="attendee_ids"/>
+                    <field name="attendee_ids"/>                    
+                    <!--增加出席人组结束-->
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    
+    <!-- 课时列表 session tree/list view -->
+    <record model="ir.ui.view" id="session_tree_view">
+        <field name="name">session.tree</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <tree string="课时Session Tree" decoration-info="duration&lt;5" 
+                decoration-danger="duration&gt;15" create="1" delete="1">
+            <!-- 上面一句为<tree string="Session Tree"> -->
+                <field name="name" />
+                <field name="course_id" />
+                <field name="duration" invisible="1"/> 
+                <field name="taken_seats" widget="progressbar"/> <!--座位占用比的数据相关处理-->
+            </tree>
+        </field>
+    </record>
+
+    <!-- 增加日历显示 calendar view -->
+    <record model="ir.ui.view" id="session_calendar_view">
+        <field name="name">session.calendar</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <calendar string="课时日历Session Calendar" date_start="start_date" date_stop="end_date" color="instructor_id">
+                <field name="name"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!--gantt甘特图，仅在企业版！！！有效-->
+    <record model="ir.ui.view" id="session_gantt_view">
+        <field name="name">session.gantt</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <gantt string="课时甘特图Session Gantt"
+                    date_start="start_date" date_stop="end_date"
+                    default_group_by='instructor_id'>
+            </gantt>
+        </field>
+    </record>    
+
+     <!--增加graph图表视图 -->
+    <record model="ir.ui.view" id="testoar_session_graph_view">
+        <field name="name">testoar.session.graph</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <graph string="课程图articipations by Courses">
+                <field name="course_id"/>
+                <field name="attendees_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!--增加kanban看板视图-->
+    <record model="ir.ui.view" id="view_testoar_session_kanban">
+        <field name="name">testoar.session.kanban</field>
+        <field name="model">testoar.session</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="course_id">
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div
+                                t-attf-class="oe_kanban_color_{{kanban_getcolor(record.color.raw_value)}}
+                                              oe_kanban_global_click_edit oe_semantic_html_override
+                                              oe_kanban_card {{record.group_fancy==1 ? 'oe_kanban_card_fancy' : ''}}">
+                            <div class="oe_dropdown_kanban">
+                                <!-- dropdown menu -->
+                                <div class="oe_dropdown_toggle">
+                                    <i class="fa fa-bars fa-lg" title="Manage" aria-label="Manage"/>
+                                    <ul class="oe_dropdown_menu">
+                                        <li>
+                                            <a type="delete">Delete</a>
+                                        </li>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker"
+                                                data-field="color"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="oe_clear"></div>
+                            </div>
+                            <div t-attf-class="oe_kanban_content">
+                                <!-- title -->
+                                Session name:
+                                <field name="name"/>
+                                <br/>
+                                Start date:
+                                <field name="start_date"/>
+                                <br/>
+                                duration:
+                                <field name="duration"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--课时会话视图菜单准备以及菜单项-->
+    <record model="ir.actions.act_window" id="session_list_action">
+        <field name="name">Sessions</field>
+        <field name="res_model">testoar.session</field>
+        <field name="view_mode">tree,form,calendar,gantt,graph,kanban</field>
+    </record>
+
+    <!--课时菜单项-->
+    <menuitem id="session_menu" name="课时Sessions"
+              parent="testoar_menu"
+              action="session_list_action"/>
+         
+    <!--向导wizard窗口-->
+    <record model="ir.ui.view" id="wizard_form_view">
+        <field name="name">wizard.form</field>
+        <field name="model">testoar.wizard</field>
+        <field name="arch" type="xml">
+            <form string="增加出席Add Attendees">
+                <group>
+                    <field name="session_id"/>
+                    <field name="attendee_ids"/>
+                </group>
+                
+                <!--向导实现指定人员的对应方法-->
+                <footer> 
+                    <button name="subscribe" type="object"
+                            string="描述Subscribe" class="oe_highlight"/>
+                    or
+                    <button special="cancel" string="取消Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="launch_session_wizard" model="ir.actions.act_window">
+      <field name="name">增加出席Add Attendees</field>
+      <field name="res_model">testoar.wizard</field>
+      <field name="view_mode">form</field>
+      <field name="target">new</field>
+      <field name="binding_model_id" ref="model_testoar_session"/>
+    </record>              
+  
+</odoo>
