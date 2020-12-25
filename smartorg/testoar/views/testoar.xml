@@ -6,6 +6,7 @@
       <field name="name">course.form</field>
       <field name="model">testoar.course</field>
       <field name="arch" type="xml">
+
         <form string="课程表单Course Form" edit="1">
             <sheet>
                 <group>
@@ -34,6 +35,7 @@
                 </notebook>
             </sheet>
         </form>
+        
       </field>      
     </record>
       

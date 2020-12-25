@@ -1,0 +1,43 @@
+<odoo>
+    <data>
+
+        <template id="index">
+            <title>test social</title>
+            <t t-foreach="teachers" t-as="teacher">
+              <p><t t-esc="teacher"/></p>
+            </t>
+        </template>
+
+        <template id="indexx">
+            <title>test social Host Requirement</title>
+            <p>业主需求列表</p>
+            <t t-foreach="objs" t-as="obj">
+              <p>
+                <t t-esc="obj.id"/> 
+                <t t-esc="obj.name"/>                
+              </p>
+            </t>
+        </template> 
+
+
+        <!-- <template id="index">
+          <ul>
+            <li t-foreach="objects" t-as="object">
+              <a t-attf-href="#{ root }/objects/#{ object.id }">
+                <t t-esc="object.display_name"/>
+              </a>
+            </li>
+          </ul>
+        </template> 
+
+        <template id="indexx">
+          <h1><t t-esc="objects."/></h1>
+          <dl>
+            <t t-foreach="objects" t-as="obj">
+              <dt><t t-esc="obj"/></dt>
+              <dd><t t-esc="obj[name]"/></dd>
+            </t>
+          </dl>
+        </template> -->
+    </data>
+</odoo>

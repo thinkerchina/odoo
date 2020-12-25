@@ -1,0 +1,212 @@
+<odoo>
+
+    <!-- 《工人视图》
+
+        1，工人抢单、报单、执行、交付的【工包单】
+        2，工人创建、查看、修改（推进后不能修改）、作废（逻辑删除），推进的【工作单】
+
+    -->
+
+
+    <!--====下面是各种视图====-->
+
+
+    <!-- === 第《一》部分：【工人】的【分包视图】tree，form === -->
+
+        <!--（1）工人的【工包单:List】-->  
+        <record model="ir.ui.view" id="worker_bargain_tree">
+          <field name="name">testsocial_worker_bargain_tree</field>
+          <field name="model">testsocial.bargain</field>
+          <field name="arch" type="xml">
+            <tree sample="1" 
+              decoration-success="work_status == '9'"
+              decoration-warning="work_status == '1'" decoration-danger="work_status == '0'" > 
+                <field name="work_sn" /> 
+                <field name="name"/>  
+                <field name="address"/> 
+                <field name="budget"/>  
+                <field name="work_status"/>           
+                <button name="reserve_sheet" type="object" string="抢单"
+                          class="btn-primary" attrs="{'invisible': [('work_status', '!=', '1')]}"/>  
+            </tree>
+          </field>
+        </record>
+
+
+        <!--（2）工人的【工包单:form】-->  
+        <record model="ir.ui.view" id="worker_bargain_form">
+          <field name="name">testsocial_worker_bargain_form</field>
+          <field name="model">testsocial.bargain</field>
+
+          <field name="arch" type="xml">
+            <form string="工包单bargain form" edit="0">
+                <sheet>
+                    <group>
+                        <field name="work_sn" readonly="1"/> 
+                        <field name="upwork_id" />                     
+                        <field name="name" /> 
+                        <field name="work_status" readonly="1" defaul="0"
+                          decoration-success="work_status == '9' "
+                          decoration-warning="work_status == '1'" decoration-danger="work_status == '0'" />  
+                        <field name="budget" /> 
+                        <field name="date_start" /> 
+                        <field name="date_end" /> 
+                        <field name="address" />                     
+                        <field name="description"/>
+                    </group> 
+                    <group string="请完成分包单，根据需要可以是多个工作任务"> 
+                        <notebook>
+                          <!--需求的后续工程落实落实-->
+                            <page string="任务计划">
+                                <field name="downwork_ids" string="任务列表">                               
+                                    <tree sample="1" decoration-success="work_status == '9'" 
+                                      decoration-warning="work_status == '1'">
+                                        <field name="name"/>
+                                        <field name="work_status"/>
+                                        <field name="task_time"/>
+                                        <field name="worker_id"/> 
+                                      </tree>
+                                </field>
+                            </page> 
+                        </notebook>
+                      </group>    
+                </sheet>
+            </form>
+          </field>      
+
+        </record>
+
+        <!-- (0)工人的【分包单】说明 -->  
+        <record model="ir.actions.act_window" id="worker_bargain_action_window">
+          <field name="name">工人分包单</field>
+          <field name="res_model">testsocial.bargain</field>
+
+          <field name="view_ids" 
+                eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'tree', 'view_id': ref('worker_bargain_tree')}),
+                      (0, 0, {'view_mode': 'form', 'view_id': ref('worker_bargain_form')}), 
+                      ]"          
+              />
+
+
+          <field name="context" eval="{'search_default_my_hosts': 0}"/>
+
+          <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一步施工单!Create the first work!</p>
+          </field>
+        </record>
+
+
+    <!-- -=- 第《一》部分：结束 -=- -->
+  
+ 
+    <!-- === 第《二》部分：【工人】的【工作视图】tree，form===-->
+      <!--（1）工人的【任务单:List】-->  
+      <record model="ir.ui.view" id="worker_task_tree">
+        <field name="name">testsocial_woker_task_tree</field>
+        <field name="model">testsocial.task</field>
+        <field name="arch" type="xml">
+            <tree  sample="1" create="0"
+              decoration-success="work_status == '9'"
+              decoration-warning="work_status == '1'" decoration-danger="work_status == '0'" > 
+                <field name="work_sn" /> 
+                <field name="datetime_start"/>
+                <field name="name"/>                                
+                <field name="task_time"/>
+                <field name="work_status"/> 
+                <button name="push_sheet" type="object" string="开工"
+                        class="btn-primary" attrs="{'invisible': [('work_status', '!=', '2')]}"/>
+                <button name="deal_sheet" type="object" string="完工"
+                        class="btn-primary" attrs="{'invisible': [('work_status', '!=', '3')]}"/>
+                <button name="submit_sheet" type="object" string="交付"
+                        class="btn-primary" attrs="{'invisible': [('work_status', '!=', '4')]}"/>
+          </tree>
+        </field>
+      </record>
+
+      <!--（2）工人的【任务单:form】-->  
+      <record model="ir.ui.view" id="worker_task_form">
+        <field name="name">testsocial_worker_task_form</field>
+        <field name="model">testsocial.task</field>
+
+        <field name="arch" type="xml">
+
+          <form string="任务单task form" >
+               <header>            
+                    <button name="declare_sheet" type="object" string="发布工作计划"
+                      class="btn-primary" attrs="{'invisible': [('work_status', '!=', '0')]}"/>
+                    <button name="back_sheet" type="object" string="撤回工作计划"
+                      class="btn-primary" attrs="{'invisible': [('work_status', '!=', '1')]}"/>                    
+                </header> 
+                <sheet>
+                    <group>
+                        <field name="work_sn" readonly="1"/> 
+                        <field name="upwork_id" string="分包单"/> 
+                        <field name="name" /> 
+                        <field name="work_status" readonly="1" 
+                          decoration-success="work_status == '9' "
+                          decoration-warning="work_status == '1'" decoration-danger="work_status == '0'"/> 
+                        <field name="budget" /> 
+                        <field name="datetime_start" /> 
+                        <field name="datetime_end" /> 
+                        <field name="address" />                     
+                        <field name="description"/>                        
+                    </group> 
+                
+              </sheet>
+          </form>
+        </field>      
+
+      </record>
+        
+      <!-- (0)工人【工作单】说明 -->  
+      <record model="ir.actions.act_window" id="worker_task_action_window">
+        <field name="name">工人工作单</field>
+        <field name="res_model">testsocial.task</field>
+        
+        <field name="view_ids" 
+              eval="[(5, 0, 0),
+                    (0, 0, {'view_mode': 'tree', 'view_id': ref('worker_task_tree')}),
+                    (0, 0, {'view_mode': 'form', 'view_id': ref('worker_task_form')}), 
+                    ]"          
+        />
+
+        <field name="context" eval="{'search_default_my_hosts': 0}"/>
+
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">创建第一步施工单!Create the first work!</p>
+        </field>
+      </record>
+    <!-- -=- 第《二》部分：结束 -=- -->
+
+
+    
+    <!-- ===顶级菜单说明/Top menu item ===-
+
+      根菜单放在了view视图文件中
+      <menuitem name="测试用工testsocial" id="testsocial_menu_root"/> 
+       
+      各角色的视图view文件也放在了view视图文件中：工人视图
+      <menuitem name="工人视图workerView" id="testsocial_menu_woker" parent="testsocial_menu_root"/>
+
+    -->
+
+    <!-- 动作菜单/actions -->
+
+      <menuitem name="工包清单bargainlist" id="testsocial_menu_worker_bargain" 
+        parent="testsocial_menu_worker" action="worker_bargain_action_window"/>
+
+      <menuitem name="我的任务tasklist" id="testsocial_menu_worker_task" 
+        parent="testsocial_menu_worker" action="worker_task_action_window"/>-->
+
+
+      <!--<menuitem name="需求清单Host List" id="testsocial_menu_host_requirement" 
+        parent="testsocial_menu_host" action="host_requirement_action_window"/> -->
+
+      <!-- <menuitem name="Server to list" id="testsocial" parent="testsocial.menu_2"
+                action="testsocial.action_server"/> -->
+
+
+
+  
+</odoo>

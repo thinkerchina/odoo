@@ -1,0 +1,41 @@
+<odoo><data>
+  
+    
+    <!-- Top menu item “测试用工”板块顶级菜单-->
+    <menuitem name="测试用工test social" id="testsocial_menu_root"
+        groups="testsocial_guest"/>
+
+    <!-- menu categories 三类用户菜单-->
+      <menuitem name="我是雇主HostView" id="testsocial_menu_host" 
+        parent="testsocial_menu_root"  groups="testsocial_host,testsocial_manager" />
+      <menuitem name="我是工长HeadView" id="testsocial_menu_head" 
+        parent="testsocial_menu_root"  groups="testsocial_head,testsocial_manager" />
+      <menuitem name="我是工人WorkerView" id="testsocial_menu_worker" 
+        parent="testsocial_menu_root"  groups="testsocial_worker,testsocial_manager"/>    
+    <!--用户菜单结束-->    
+
+    <!--用户组菜单测试项，测试用户组权限
+      <menuitem id="menu_write_off_list" name="testsocial核销清单" parent="testsocial_menu_host" 
+          action="head_project_action_window" groups="testsocial_test_group,testsocial_manager"/> 
+          -^^-^^-groups，允许多个组记录-->
+
+    <!-- <menuitem name="Server to list" id="testsocial" parent="testsocial.menu_2"
+              action="testsocial.action_server"/> -->
+
+
+    <!-- server action to the one above 
+    <record model="ir.actions.server" id="host.action_server">
+      <field name="name">testsocial server</field>
+      <field name="model_id" ref="model_testsocial_testsocial"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record> -->
+
+
+</data></odoo>

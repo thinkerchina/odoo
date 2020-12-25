@@ -1,0 +1,183 @@
+<odoo> 
+  
+    <!-- 《业主视图》
+
+        1，业主创建、查看、修改（发单后不能修改）、作废（逻辑删除），发单【工需单】
+        2，业主订单、委托、接受（结算）【工程单】
+        3，业主查看【工作单】（由工头的工包单产生）
+
+
+    -->
+
+
+    <!--====下面是各种视图====-->
+
+    <!-- === 第《三》部分：服务器交互Action ===-->
+    
+      <!-- server action to the one above -->
+      <record model="ir.actions.server" id="host_requirement_action_server">
+        <field name="name">雇主需求s</field>
+        <field name="model_id" ref="model_testsocial_requirement"/>
+        <field name="state">code</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一份需求!
+              Create the first requirement!</p>
+        </field> 
+        <field name="code">
+          action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "name":"雇主需求s",            
+            "res_model": "testsocial.requirement",
+          }
+          
+        </field>
+        
+      </record> 
+
+          <!-- Action view的一些测试
+            
+            <record model="ir.actions.act_window.view" id="test_action_tree">
+                  <field name="sequence" eval="1"/>
+                  <field name="view_mode">tree</field>
+                  <field name="view_id" ref="view_test_tree"/>
+                  <field name="act_window_id" ref="test_action"/>
+            </record>          
+          
+          -->
+   
+          
+
+
+    <!-- === 第《一》部分：【业主】的【需求视图】tree，form === -->
+        
+        <!-- (0)【工需单-行为】说明     
+        <record model="ir.actions.act_window" id="host_requirement_action_window">
+          <field name="name">雇主需求单</field>
+          <field name="res_model">testsocial.requirement</field>           
+          <field name="view_mode">tree,form</field>
+
+          <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一份需求!
+              Create the first requirement!</p>
+          </field> 
+        </record> -->
+
+   
+
+        <!--（1）【工需单:form】-->
+        <record model="ir.ui.view" id="host_requirement_form">
+          <field name="name">testsocial_host_form</field>
+          <field name="model">testsocial.requirement</field> 
+
+          <!-- <field name="groups_id" eval=[(4,ref("testsocial_host"))]/> -->
+
+          <field name="arch" type="xml">
+
+            <form string="requirement" >
+                <sheet>
+                    <group> 
+                        <field name="work_sn" /> 
+                        <field name="name" /> 
+                        <field name="budget" /> 
+                        <field name="date_start" /> 
+                        <field name="date_end" /> 
+                        <field name="address" />
+                        <field name="host_id" />
+                    </group> 
+
+                    <notebook> 
+                        <page string="需求描述"> 
+                            <field name="description"/>
+                            <tree banner_route="/testsocial/hello" />
+                        </page> 
+
+                        <!--需求的后续工程落实落实-->
+                        <page string="施工方案选择">
+                            <field name="downwork_ids">
+                                <tree sample="1">  
+                                    <field name="name"/>
+                                    <field name="work_status"/>
+                                    <field name="task_time"/>
+                                    <field name="head_id"/> 
+                                </tree>
+                              </field> 
+                          </page>
+
+                              <!--<field name="help" type="html">
+                                <p class="o_view_nocontent_smiling_face">还没有工长提供施工方案，请耐心等待!
+                                  Waiting for the first project!</p>
+                              </field> 
+                                  <field name="help" type="html">
+                                    <p class="o_view_nocontent_smiling_face">还没有工人进入施工，请耐心等待!
+                                      Waiting for the first task!</p>
+                                  </field> -->
+
+                          <!--工程的后续工作：施工进展 ==两次外接表，需要谨慎处理 -->
+                        <page string="施工进展Works" >
+                              <!--<field name="downwork_ids">
+                                  <tree>
+                                      <field name="date_start"/>
+                                      <field name="name"/>
+                                      <field name="work_status"/>                                
+                                      <field name="work_id"/> 
+                                      <field name="task_time"/>
+                                  </tree>
+                              </field>-->
+                        </page> 
+
+                          <!--需求在施工结束后的总结-->
+                          <page string="验收说明">
+                              <field name="work_status"/>
+                          </page>
+                    </notebook> 
+                </sheet> 
+            </form>
+          
+          </field>
+        </record> 
+                  
+        <!--（2）【工需单:List】-->  
+        <record model="ir.ui.view" id="host_requirement_tree">
+          <field name="name">host.requirement.tree</field>
+          <field name="model">testsocial.requirement</field>
+          
+          <field name="arch" type="xml">
+            <tree decoration-bf="1" sample="1"> 
+              <field name="work_sn" /> 
+              <field name="name" decoration-danger="1"/>  
+              <field name="address" />
+              <field name="budget" />
+              <field name="work_status" />  
+            </tree>
+          </field>
+        </record>
+
+    <!-- -=- 第《一》部分：结束 -=- -->
+
+
+    <!-- === 第《二》部分：【业主】的【工程或工作视图】tree，form===-->
+
+    <!-- -=- 第《二》部分：结束-=- -->
+
+
+    <!-- === 顶级菜单说明/Top menu item ===-
+     
+        根菜单放在了view视图文件中
+        <menuitem name="测试用工testsocial" id="testsocial_menu_root"/> 
+        
+        各角色的视图view文件也放在了view视图文件中：业主视图
+        <menuitem name="雇主视图HostView" id="testsocial_menu_host" parent="testsocial_menu_root"/>
+
+    -->
+
+    <!-- 行为-菜单/actions -->
+
+    <!--  <menuitem name="需求清单Host List" id="testsocial_menu_host_requirement" 
+        parent="testsocial_menu_host" action="host_requirement_action_window"/> -->
+
+      <menuitem name="需求清单Host Server List" id="testsocial_menu_host_server_requirement" 
+        parent="testsocial_menu_host" action="host_requirement_action_server"/>
+
+
+</odoo>

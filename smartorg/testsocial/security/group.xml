@@ -1,0 +1,84 @@
+<odoo><data>
+    <!--类别和用户组，用来设置访问边界与权限-->
+   
+    <!--类别定义-->
+        <record id="testsocial_category_main" model="ir.module.category">
+            <field name="name">test social Category</field>
+            <field name="description">测试用工相关的板块test social Category</field>
+            <field name="sequence">1</field>
+        </record>      
+    <!-- 类别定义结束 -->
+
+    <!-- 用户组定义 -->
+        <!--Guest-start访客访问规则-->
+            <record id="testsocial_guest" model="res.groups">
+                <field name="name">testsocial Guest</field>
+                <field name="category_id" ref="testsocial_category_main"/> 
+            </record>
+        <!--Guest-end访客访问规则-->
+
+        <!--Manager-start经理访问规则-->
+            <record id="testsocial_manager" model="res.groups">
+                <field name="name">testsocial Manager</field>
+                <field name="category_id" ref="testsocial_category_main"/>
+                <field name="implied_ids" eval="[(6,0,[ref('testsocial_guest')])]"/> 
+            </record>
+
+        <!--Host-业主规则-->        
+            <record id="testsocial_host" model="res.groups">
+                <field name="name">testsocial Host</field>
+                <field name="category_id" ref="testsocial_category_main"/>
+                <field name="implied_ids" eval="[(6,0,[ref('testsocial_guest')])]"/> 
+            </record>        
+
+            <!--1，host_requirement 业主只能看到属于自己的需求，可能是自己创建，也可能是工头代创建host_id的-->
+            <record id="testsocial_host_requirement_rule" model="ir.rule">
+                <field name="name">业主只能看到自己的需求</field>
+                <field name="model_id" ref="model_testsocial_requirement"/>                
+                <field name="groups" eval="[(6,0,[ref('testsocial.testsocial_host')])]" /> 
+                <field name="domain_force">
+                    ["|",('host_id','=',user.id),('create_uid','=',user.id)]
+                </field> 
+            </record>
+        <!--end业主规则-->
+
+
+        <!--Head-工长访问规则-->                
+            <record id="testsocial_head" model="res.groups"> 
+                <field name="name">testsocial Head</field>
+                <field name="category_id" ref="testsocial_category_main"/>
+                <field name="implied_ids" eval="[(6,0,[ref('testsocial_guest')])]"/> 
+            </record> 
+        <!--end工长访问规则-->
+
+
+
+        <!--worker-start工人访问规则-->
+        
+            <record id="testsocial_worker" model="res.groups">
+                <field name="name">testsocial worker</field>
+                <field name="category_id" ref="testsocial_category_main"/>
+                <field name="implied_ids" eval="[(6,0,[ref('testsocial_guest')])]"/> 
+            </record>
+        <!--end工人访问规则-->
+
+    <!--用户组定义结束-->    
+
+
+    <!--测试用户组功能，创建用户组，并设置用户组的类型-->
+        <!--<record id="testsocial_group_test1" model="res.groups"> -->
+            <!--<field name="name">testsocial测试一组</field> -->
+                <!--vv-设置用户组的板块类别，-vv-->
+            <!-- <field name="category_id" ref="testsocial_category_main"/> -->
+                <!--vv-继承哪些角色的权限，base.group_user为普通用户，组36-41,没39-vv-->            
+            <!-- <field name="implied_ids" eval="[(4, ref('testsocial_worker'))]"/> -->
+                <!--vv-删除当前组的所有继承组-vv-->
+            <!-- <field name="implied_ids" eval="[(5,)]"/> -->
+                <!--vv-删除当前组的所有继承组，然后添加之后提供的数据-vv-->
+            <!-- <field name="implied_ids" eval="[(6,0,[ref('testsocial_head'),ref('testsocial_worker')])]"/>  -->
+                <!--vv-为用户组添加成员，该成员ref后的字符串存储在ir_rodel_data的name字段中，module.name -vv-->
+            <!-- <field name="users" eval="[(4, ref('base.user_root'))]" /> -->
+        <!--</record> -->
+    <!--测试用户组功能-->       
+
+</data></odoo>

@@ -1,0 +1,17 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+manager_requirement,requirement manager,model_testsocial_requirement,testsocial_manager,1,1,1,1
+manager_project,project manager,model_testsocial_project,testsocial_manager,1,1,1,1
+manager_bargain,bargain manager,model_testsocial_bargain,testsocial_manager,1,1,1,1
+manager_task,task manager,model_testsocial_task,testsocial_manager,1,1,1,1
+guest_requirement,requirement guest,model_testsocial_requirement,testsocial_guest,1,0,0,0
+guest_project,project guest,model_testsocial_project,testsocial_guest,1,0,0,0
+guest_bargain,bargain guest,model_testsocial_bargain,testsocial_guest,1,0,0,0
+guest_task,task guest,model_testsocial_task,testsocial_guest,1,0,0,0
+host_requirement,requirement host,model_testsocial_requirement,testsocial_host,1,1,1,0
+host_project,project host,model_testsocial_project,testsocial_host,1,1,0,0
+head_requirement,requirement head,model_testsocial_requirement,testsocial_head,1,0,0,0
+head_project,project head,model_testsocial_project,testsocial_head,1,1,1,0
+head_bargain,bargain head,model_testsocial_bargain,testsocial_head,1,1,1,0
+head_task,task head,model_testsocial_task,testsocial_head,1,1,0,0
+worker_bargain,bargain worker,model_testsocial_bargain,testsocial_worker,1,1,0,0
+worker_task,task worker,model_testsocial_task,testsocial_worker,1,1,1,0

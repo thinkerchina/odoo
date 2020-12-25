@@ -1,0 +1,115 @@
+<odoo>
+  
+    <!-- 《工人视图》
+
+        1，工人抢单、报单、执行、交付的【工包单】
+        2，工人创建、查看、修改（推进后不能修改）、作废（逻辑删除），推进的【工作单】
+
+    -->
+
+
+    <!--====下面是各种视图====-->
+
+
+    <!-- === 第《一》部分：【工人】的【工作视图】tree，form === -->
+
+    <!-- (0)【工作单】说明 -->  
+    <record model="ir.actions.act_window" id="worker_task_action_window">
+      <field name="name">工人工作单testsocial task</field>
+      <field name="res_model">testsocial.task</field>
+      <field name="view_mode">tree,form</field>
+
+      <field name="context" eval="{'search_default_my_hosts': 0}"/>
+
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">创建第一步施工单!Create the first work!</p>
+      </field>
+    </record>
+
+    <!--（1）【工作单:form】-->  
+    <record model="ir.ui.view" id="worker_task_form">
+      <field name="name">worker.task.form</field>
+      <field name="model">testsocial.task</field>
+
+      <field name="arch" type="xml">
+        <form string="工人施工单Host Form" edit="1">
+            <sheet>
+                <group>
+              <!--      <field name="work_id" /> 
+                    <field name="name" /> 
+                    <field name="work_status" />  -->
+                </group>
+                <notebook>
+              <!--      <page string="需求描述Requirement"> 
+                        <field name="description"/>
+                    </page> -->
+                    
+                    <!--需求的后续工程落实落实-->
+              <!--      <page string="工程进展Project" >
+                        <field name="project_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="work_status"/>
+                                <field name="task_time"/>
+                                <field name="head_id"/> 
+                            </tree>
+                        </field>
+                    </page> -->
+
+                    <!--需求在施工结束后的总结-->
+              <!--      <page string="验收说明" edit="1">
+                        <field name="work_status"/>
+                    </page> -->
+                </notebook> 
+            </sheet>
+        </form>
+      </field>      
+
+    </record>
+      
+    <!--（2）【工作单:List】-->  
+    <record model="ir.ui.view" id="worker_task_tree">
+      <field name="name">woker.task.tree</field>
+      <field name="model">testsocial.task</field>
+      <field name="arch" type="xml">
+        <tree> <!--浏览雇主订单最关心的信息是什么？-->
+            <field name="datetime_start"/>
+            <field name="name"/>                                
+            <field name="task_time"/>
+            <field name="work_status"/> 
+        </tree>
+      </field>
+    </record>
+    <!-- -=- 第《一》部分：结束 -=- -->
+
+
+    <!-- === 第《二》部分：【工人】的【工包视图】tree，form===-->
+  
+
+    <!-- ===顶级菜单说明/Top menu item ===-
+
+      根菜单放在了view视图文件中
+      <menuitem name="测试用工testsocial" id="testsocial_menu_root"/> 
+       
+      各角色的视图view文件也放在了view视图文件中：工人视图
+      <menuitem name="工人视图workerView" id="testsocial_menu_woker" parent="testsocial_menu_root"/>
+
+    -->
+
+    <!-- 动作菜单/actions -->
+
+      <menuitem name="工作清单worklist" id="testsocial_menu_worker_task" 
+        parent="testsocial_menu_worker" action="worker_task_action_window"/>
+
+      <!--<menuitem name="需求清单Host List" id="testsocial_menu_host_requirement" 
+        parent="testsocial_menu_host" action="host_requirement_action_window"/> -->
+
+      <!-- <menuitem name="Server to list" id="testsocial" parent="testsocial.menu_2"
+                action="testsocial.action_server"/> -->
+
+
+    
+
+
+  
+</odoo>

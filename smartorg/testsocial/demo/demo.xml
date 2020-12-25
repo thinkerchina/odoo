@@ -1,0 +1,35 @@
+<odoo>
+    <data>
+
+          <record id="object0" model="testsocial.requirementsheet">
+            <field name="name">requirement 0</field>
+            <field name="sheet_id">0</field>
+            <field name="description">第零个需求</field>
+          </record>
+
+          <record id="object1" model="testsocial.requirementsheet">
+            <field name="name">requirement 1</field>
+            <field name="sheet_id">10</field>
+            <field name="description">第一个需求</field>
+          </record>
+
+          <record id="object2" model="testsocial.requirementsheet">
+            <field name="name">requirement 2</field>
+            <field name="sheet_id">20</field>
+            <field name="description">第二个需求</field>
+          </record>
+
+          <record id="object3" model="testsocial.requirementsheet">
+            <field name="name">requirement 2</field>
+            <field name="sheet_id">30</field>
+            <field name="description">第三个需求</field>
+          </record>
+
+          <record id="object4" model="testsocial.requirementsheet">
+            <field name="name">requirement 4</field>
+            <field name="sheet_id">40</field>
+            <field name="description">第四个需求</field>
+          </record>
+
+    </data>
+</odoo>

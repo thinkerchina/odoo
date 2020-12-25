@@ -1,0 +1,228 @@
+<odoo> 
+  
+    <!-- 《业主视图》
+
+        1，业主创建、查看、修改（发单后不能修改）、作废（逻辑删除），发单【工需单】
+        2，业主订单、委托、接受（结算）【工程单】
+        3，业主查看【工作单】（由工头的工包单产生）
+
+
+    -->
+
+
+    <!--====下面是各种视图====-->
+
+
+    <!-- === 第《一》部分：【业主】的【需求视图】tree，form === -->
+        
+
+        <!--（1）业主的【工需单:form】-->
+        <record model="ir.ui.view" id="host_requirement_form">
+          <field name="name">testsocial_host_requirement_form</field>
+          <field name="model">testsocial.requirement</field>
+          <!-- <field name="groups_id" eval=[(4,ref("testsocial_host"))]/> -->
+
+          <field name="arch" type="xml">
+
+            <form string="工需单requirement form">
+                <header>
+                    <button name="offer_sheet" type="object" string="发布需求"
+                      class="btn-primary" attrs="{'invisible': [('work_status', '!=', '0')]}"/>
+                    <button name="back_sheet" type="object" string="撤回需求"
+                      class="btn-primary" attrs="{'invisible': [('work_status', '!=', '1')]}"/>
+                </header> 
+                <sheet>
+                    <group> 
+                        <field name="work_sn" readonly="1"/> 
+                        <field name="name" /> 
+                        <field name="work_status" readonly="1" 
+                          decoration-success="work_status == '9' "
+                          decoration-warning="work_status == '1'" decoration-danger="work_status == '0'" /> 
+                        <field name="budget" />                         
+                        <field name="date_start" /> 
+                        <field name="date_end" /> 
+                        <field name="address" />
+                        <field name="description"/>                        
+                        <!-- <field name="host_id" /> -->
+                    </group>                     
+
+                    <group string="你发布的需求招标，可以直接点击“收标”按钮对工程方案进行确认"> 
+                        <notebook> 
+
+                            <!--需求的后续工程落实-->
+                            <page string="工程方案选择">                    
+                              <field name="downwork_ids" string="施工方案">
+                                  <tree sample="1" 
+                                    decoration-success="work_status == '9' "
+                                    decoration-warning="work_status == '1'" decoration-danger="work_status == '0'">
+                                      <button name="order_sheet" type="object" string="收标"
+                                        class="btn-primary" attrs="{'invisible': [('work_status', '!=', '1')]}"/>
+                                        
+                                      <field name="name"/>
+                                      <field name="head_id"/> 
+                                      <field name="budget"/>
+                                      <field name="task_time"/>
+                                      <field name="date_start"/>
+                                      <field name="work_status"/>
+                                  </tree>
+                                </field> 
+                            </page> 
+
+                              <!--<field name="help" type="html">
+                                <p class="o_view_nocontent_smiling_face">还没有工长提供施工方案，请耐心等待!
+                                  Waiting for the first project!</p>
+                              </field> 
+                                  <field name="help" type="html">
+                                    <p class="o_view_nocontent_smiling_face">还没有工人进入施工，请耐心等待!
+                                      Waiting for the first task!</p>
+                                  </field> -->
+
+                          <!--工程的后续工作：施工进展 ==两次外接表，需要谨慎处理 
+                        <page string="施工进展Works" > -->
+                              <!--<field name="downwork_ids">
+                                  <tree>
+                                      <field name="date_start"/>
+                                      <field name="name"/>
+                                      <field name="work_status"/>                                
+                                      <field name="work_id"/> 
+                                      <field name="task_time"/>
+                                  </tree>
+                              </field>
+                        </page> -->
+
+                          <!--需求在施工结束后的总结-->
+                          <!--<page string="验收说明">
+                              <field name="work_status"/>
+                          </page> -->
+                    </notebook>
+                   </group>  
+                </sheet> 
+            </form>
+          
+          </field>
+        </record> 
+                  
+        <!--（2）雇主的【工需单:List】-->  
+        <record model="ir.ui.view" id="host_requirement_tree">
+          <field name="name">testsocial_host_requirement_tree</field>
+          <field name="model">testsocial.requirement</field>
+          
+          <field name="arch" type="xml">
+            <tree sample="1" 
+              decoration-success="work_status == '9' "
+              decoration-warning="work_status == '1'" decoration-danger="work_status == '0'" > 
+              <field name="work_sn" /> 
+              <field name="name" />  
+              <field name="address" />
+              <field name="budget" />
+              <field name="work_status" />          
+              <field name="downwork_ids"/>               
+            </tree>
+          </field>
+        </record> 
+
+        <!-- (0)【工需单-行为】说明 -->    
+        <record model="ir.actions.act_window" id="host_requirement_action_window">
+          <field name="name">雇主需求单</field>
+          <field name="res_model">testsocial.requirement</field>           
+          <!--<field name="groups_id" eval ="[(6,0,[ref('testsocial_host')])]"/> -->
+          <!-- <field name="context" eval="{'search_default_my_hosts': 0}"/> -->
+          <field name="view_ids" 
+               eval="[(5, 0, 0),
+                      (0, 0, {'view_mode': 'tree', 'view_id': ref('host_requirement_tree')}),
+                      (0, 0, {'view_mode': 'form', 'view_id': ref('host_requirement_form')}), 
+                      ]"          
+          />
+
+          <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">创建第一份需求!
+              Create the first requirement!</p>
+          </field> 
+        </record>
+    <!-- -=- 第《一》部分：结束 -=- -->
+
+
+    <!-- === 第《二》部分：【业主】的【工程或工作视图】tree，form===-->
+        <!-- (0)【收标工程-行为】说明 -->    
+        <record model="ir.actions.act_window" id="host_project_action_window">
+          <field name="name">工长工程投标</field>
+          <field name="res_model">testsocial.project</field>           
+          <!--<field name="groups_id" eval ="[(6,0,[ref('testsocial_host')])]"/> -->
+          <field name="view_mode">tree</field>         
+
+          <!-- <field name="context" eval="{'search_default_my_hosts': 0}"/> -->
+
+          <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">没有收到工程投标!
+              None Project!</p>
+          </field> 
+        </record>
+
+        <!--（2）【收标工程单:List】-->  
+        <record model="ir.ui.view" id="host_project_tree">
+          <field name="name">host.project.tree</field>
+          <field name="model">testsocial.project</field>
+          <field name="arch" type="xml">
+            <tree sample="1" decoration-success="work_status == '2'" 
+                decoration-warning="work_status == '1'" > 
+              <field name="head_id"/>               
+              <field name="name"/>  
+              <field name="task_time"/>
+              <field name="budget"/>  
+              <field name="work_status"/>              
+              <!--<button name="order_sheet" type="object" string="收标"
+                class="btn-primary" attrs="{'invisible': [('work_status', '!=', '1')]}"/> -->
+            </tree>
+          </field>
+        </record>
+      
+    <!-- -=- 第《二》部分：结束-=- -->
+
+    <!-- === 第《三》部分：服务器交互Action ===-->
+    
+      <!-- server action to the one above 
+      <record model="ir.actions.server" id="host_action_server_publish">
+        <field name="name">雇主发单</field>
+        <field name="model_id" ref="model_testsocial_requirement"/>
+        <field name="state">object_write</field>
+        <field name="fileds_lines" col1="work_status" value=2/>
+        
+      </record> -->
+
+          <!-- Action view的一些测试
+          <field name="view_id" ref=""/>
+            
+            <record model="ir.actions.act_window.view" id="test_action_tree">
+                  <field name="sequence" eval="1"/>
+                  <field name="view_mode">tree</field>
+                  <field name="view_id" ref="view_test_tree"/>
+                  <field name="act_window_id" ref="test_action"/>
+            </record>          
+          
+          -->
+
+
+    <!-- === 顶级菜单说明/Top menu item ===-
+     
+        根菜单放在了view视图文件中
+        <menuitem name="测试用工testsocial" id="testsocial_menu_root"/> 
+        
+        各角色的视图view文件也放在了view视图文件中：业主视图
+        <menuitem name="雇主视图HostView" id="testsocial_menu_host" parent="testsocial_menu_root"/>
+
+    -->
+
+    <!-- 行为-菜单/actions -->
+
+      <menuitem name="我的需求Host List" id="testsocial_menu_host_requirement" 
+        parent="testsocial_menu_host" action="host_requirement_action_window"/>
+
+      <menuitem name="应标工程Project List" id="testsocial_menu_host_Project" 
+        parent="testsocial_menu_host" action="host_project_action_window"/>
+
+
+      <!-- <menuitem name="Host Server List" id="host_action_server_test" 
+        parent="testsocial_menu_host" action="host_action_server_publish"/> -->
+
+
+</odoo>

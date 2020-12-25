@@ -1,0 +1,35 @@
+<odoo><data>
+    
+    <!--用户组访问权限的进一步设置-->
+    
+    <!--start业主规则-->
+        
+        
+    <!--end业主规则-->
+
+    <!--start工长访问规则-->
+    
+    <!--end工长访问规则-->
+
+    <!--start工人访问规则-->
+    
+    <!--end工人访问规则-->
+
+    <!--group id:host21,worker22,guest23,head33,scmanager14 ,ruleid33-modelid141-->
+
+    <!--    <record id="testsocial_host_rule_requirement" model="ir.rule">
+            <field name="name">雇主只能看到自己的需求</field>
+            <field name="model_id" ref="model_testsocial_requirementsheet"/>            
+            <field name="groups" eval="[(4, ref('testsocial_host'),'1'),
+                                        (4, ref('testsocial_worker'),'False')]"/> 
+            <field name="perm_read" eval="0"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="domain_force">
+                ['|', ('host_id','=',False),
+                      ('host_id','=',user.id)]
+            </field> 
+        </record>         -->
+
+</data></odoo>
