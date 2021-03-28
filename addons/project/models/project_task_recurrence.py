@@ -178,8 +178,10 @@ class ProjectTaskRecurrence(models.Model):
             if repeat_on_month == 'date':
                 start = date_start - relativedelta(days=1)
                 if repeat_type == 'until' and repeat_until > date_start:
-                    delta = relativedelta(repeat_until, date_start)
-                    count = delta.years * 12 + delta.months
+                    start = start.replace(day=min(repeat_day, monthrange(start.year, start.month)[1])) #replace repeatday as start day
+                    if start < date_start: start += relativedelta(months=repeat_interval) # Ensure the next recurrence is in the future
+                    delta = relativedelta(repeat_until, start) #start day has been changed, is not date_start
+                    count = (delta.years * 12 + delta.months) // repeat_interval + 1 #losed: repeat_interval
                 for i in range(count):
                     start = start.replace(day=min(repeat_day, monthrange(start.year, start.month)[1]))
                     dates.append(start)
